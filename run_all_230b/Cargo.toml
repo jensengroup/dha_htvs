@@ -1,0 +1,8 @@
+[package]
+name = "run_all_230b"
+version = "0.1.0"
+authors = ["koerstz"]
+edition = "2018"
+
+[dependencies]
+ndarray = "0.13.0"
