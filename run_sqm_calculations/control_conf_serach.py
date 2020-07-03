@@ -60,7 +60,6 @@ def submit_job(csv, script, mem, cpus, nodes):
 
 def run_calculations(csv_names, script, mem, cpus, nodes):
     ''' '''
-
     submitted_jobs = set()
     for csv in csv_names:
         batch_id = submit_job(csv, script, mem, cpus, nodes)
@@ -94,7 +93,7 @@ if __name__ == "__main__":
     nodes = 250
     chunk_size = 1
 
-    script = './mogens_conf_search.py'
+    script = './sqm_mol_search.py'
 
     data_file = sys.argv[1]
 

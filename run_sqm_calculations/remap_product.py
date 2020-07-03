@@ -3,7 +3,7 @@ from rdkit.Chem import AllChem
 import copy
 
 def map_atoms(reactant, product):
-    """Returns new order in product """
+    """Returns new atom ordering in product that matches the reactant """
 
     reac = copy.deepcopy(reactant)
     prod = copy.deepcopy(product)

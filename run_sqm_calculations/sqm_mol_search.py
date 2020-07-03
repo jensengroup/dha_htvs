@@ -21,7 +21,7 @@ from conformers.create_conformers import RotatableBonds
 
 
 def reactant2product(reac_smi):
-    """ create prodruct from reactant """
+    """ create product from reactant """
 
     smarts = "[C:1]12=[C:2][C:3]=[C:4][C:5]=[C:6][C:7]1[C:8][C:9]=[C:10]2>>[C:8]=[C:9][C:10]=[C:1]1[C:2]=[C:3][C:4]=[C:5][C:6]=[C:7]1"
     __rxn__ = AllChem.ReactionFromSmarts(smarts)
@@ -80,8 +80,8 @@ def gs_conformer_search(name, rdkit_conf, chrg, mult, cpus):
     return low_energy_conf
 
 
-def gs_mogens(name, smi, chrg, mult, cps):
-    """GS conformers search given a smiles string  """
+def gs_dha(name, smi, chrg, mult, cps):
+    """ground state conformer for a smiles string  """
 
     reac_smi, prod_smi = reactant2product(smi)
 
@@ -108,7 +108,7 @@ def gs_mogens(name, smi, chrg, mult, cps):
 
 
 def ts_search(gs_dict):
-    """ Perform ts scan of the bond getting broken"""
+    """ Perform ts scan of the reacting cc-bond """
 
     reactant = gs_dict['xtb_reac']
 
@@ -140,11 +140,8 @@ def ts_search(gs_dict):
     ts_conf = ts_qmmol.conformers[0]
     ts_conf.conf_calculate(quantities=['ts_guess', 'ts_guess_energy'], keep_files=True)
 
-    # update ts_qmmol, hack since i can't set calc on conf.
-    # please fix this.
-
     # Run real TS optimization
-    ts_param = {'method': 'pm6',
+    ts_param = {'method': 'pm3',
                 'basis': '',
                 'opt': 'ts,calcall,noeigentest',
                 'freq': 'freq',
@@ -169,7 +166,7 @@ def ts_search(gs_dict):
 
 
 def ts_test(test_qmconf):
-    """ Automatically test TS if it correct """
+    """ Automatically test TS """
 
     correct_ts = True # if correct TS. Change to false if wrong TS.
 
@@ -274,11 +271,12 @@ if __name__ == '__main__':
     # find storage energy
     compound_list = list()
     for idx, compound in data.iterrows():
-        reac_qmconf, prod_qmconf, storage = gs_mogens(compound.comp_name,
-                                                      compound.smiles,
-                                                      compound.charge,
-                                                      compound.multiplicity,
-                                                      cpus)
+        reac_qmconf, prod_qmconf, storage = gs_dha(compound.comp_name,
+                                                   compound.smiles,
+                                                   compound.charge,
+                                                   compound.multiplicity,
+                                                   cpus)
+
         compound_list.append({'xtb_reac': reac_qmconf,
                               'xtb_prod': prod_qmconf,
                               'xtb_storage': storage})
